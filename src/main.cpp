@@ -1,6 +1,9 @@
 #include <Arduino.h> // do 60 cm meri +- 1 cm
 #include <stdio.h>
-// #include <thread>
+#include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/wiki/browse/
+// NewPing sonar(3, 2, 300);  // funguje, je to fajn, ale je to hodně pomalé, jedno měření 35 až 50 ms 
+
+
 // #include <fmt/core.h> //error: #error Module not supported.
 // #include <format.h> 
 // using fmt::print; // from https://github.com/MiroslavBurda/K2_Bratislava/blob/main/src/main.cpp
@@ -11,14 +14,26 @@
 // todo prumerovat vzdy poslednich 5 mereni -viz IR ve "vytlaceni ze ctverce"
 //todo hlavicka 0x00, 0x80, 8 bytu dat, crc (bitovy soucet) 
 
-const uint8_t countUson = 7; // count of Ultrasonics 
+const uint8_t countUson = 8; // count of Ultrasonics 
 const uint8_t countMeasure = 4; // count of measuring of every ultrasonic 
+const uint8_t maxDist = 200;
 long duration[countUson] = { 0 }; // variable for the duration of sound wave travel
 uint8_t distance[countUson] = { 0 };  
-uint8_t trigPin[countUson] = { 3, 4, 5, 6, 7, 8, 9 }; //10
-uint8_t echoPin[countUson] = { 2, 19, 18, 17, 16, 15, 14};  //13
+// uint8_t trigPin[countUson] = { 3, 4, 5, 6, 7, 8, 9, 10 }; //10
+// uint8_t echoPin[countUson] = { 2, 19, 18, 17, 16, 15, 14, 13};  //13
 uint8_t dist[countUson][countMeasure] = {{ 0 }, { 0 }} ; 
 int k = 0; // counter for averageUltrasonic()
+
+NewPing sonar[countUson] = {   // Sensor object array.
+  NewPing(3, 2, maxDist), // Each sensor's trigger pin, echo pin, and max distance to ping. 
+  NewPing(4, 19, maxDist), 
+  NewPing(5, 18, maxDist),
+  NewPing(6, 17, maxDist), 
+  NewPing(7, 16, maxDist), 
+  NewPing(8, 15, maxDist),
+  NewPing(9, 14, maxDist), 
+  NewPing(10, 13, maxDist)
+};
 
 void averageUltrasonic();
 long beginTime = millis();
@@ -43,9 +58,11 @@ void setup() {
 
     Serial.begin(115200);
     Serial.println("Ultrasonic Sensor HC-SR04 Test");
-    long beginTime = millis();
+    
 }
  
+long lastTime = millis();
+
 void loop() {
     averageUltrasonic();
     for(int i = 0; i< countUson; i++) {
@@ -54,10 +71,12 @@ void loop() {
         Serial.print(distance[i]);
         Serial.print("cm,   ");
     }
-    Serial.print( millis() - beginTime);
+    Serial.print( millis() - lastTime);
+    lastTime = millis();
     Serial.println(" ");
+
     // Serial.read();
-    delay(10);
+    // delay(31);
     
 }  // end of loop() ****************************************************
 
@@ -67,18 +86,22 @@ void averageUltrasonic() { // Ultrasonic averaging
         k++;
         if (k == 30000)
             k = 0;
-        byte N = k % countMeasure;
-        for(int i = 0; i< countUson; i++)
-            dist[i][N] =  readUson(i);
+        byte N = k % countMeasure; 
+        for(int i = 0; i< countUson; i++) {
+            //dist[i][N] =  sonar[i].ping_cm();
+            distance[i] = sonar[i].ping_cm();
+            delay(30);
+        }
+            
 
-        for(int i = 0; i< countUson; i++)  {
-            byte a = 0; 
-            while (a < countMeasure) {
-                distance[i] += dist[i][a];
-                a++;
-            }
-            distance[i] /= countMeasure;
-        } 
-        delay(10);
+        // for(int i = 0; i< countUson; i++)  {
+        //     byte a = 0; 
+        //     while (a < countMeasure) {
+        //         distance[i] += dist[i][a];
+        //         a++;
+        //     }
+        //     distance[i] /= countMeasure;
+        // } 
+        
     // }
 }
