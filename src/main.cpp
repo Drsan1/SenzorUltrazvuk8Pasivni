@@ -38,21 +38,21 @@ NewPing sonar[countUson] = {   // Sensor object array.
 void averageUltrasonic();
 long beginTime = millis();
 
-uint8_t readUson(uint8_t numUson){
-    digitalWrite(trigPin[numUson], HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin[numUson], LOW);
-    // Reads the echoPin, returns the sound wave travel time in microseconds
-    duration[numUson] = pulseIn(echoPin[numUson], HIGH);
-    // Calculating the distance
-    return duration[numUson] * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-}
+// uint8_t readUson(uint8_t numUson){
+//     digitalWrite(trigPin[numUson], HIGH);
+//     delayMicroseconds(10);
+//     digitalWrite(trigPin[numUson], LOW);
+//     // Reads the echoPin, returns the sound wave travel time in microseconds
+//     duration[numUson] = pulseIn(echoPin[numUson], HIGH);
+//     // Calculating the distance
+//     return duration[numUson] * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+// }
 
 void setup() {
-    for(int i = 0; i< countUson; i++) {
-        pinMode(trigPin[i], OUTPUT);
-        pinMode(echoPin[i], INPUT); 
-    }
+    // for(int i = 0; i< countUson; i++) {
+    //     pinMode(trigPin[i], OUTPUT);
+    //     pinMode(echoPin[i], INPUT); 
+    // }
 
     // std::thread t2(averageUltrasonic); // prumerne hodnoty z IR
 
@@ -64,18 +64,24 @@ void setup() {
 long lastTime = millis();
 
 void loop() {
-    averageUltrasonic();
-    for(int i = 0; i< countUson; i++) {
-        Serial.print(i);
-        Serial.print(" : "); // Serial.print(":  Distance: ");
-        Serial.print(distance[i]);
-        Serial.print("cm,   ");
-    }
-    Serial.print( millis() - lastTime);
-    lastTime = millis();
-    Serial.println(" ");
+    averageUltrasonic();  
+      
+    // for(int i = 0; i< countUson; i++) {   // begin output print ************************
+    //     Serial.print(i);
+    //     Serial.print(" : "); // Serial.print(":  Distance: ");
+    //     Serial.print(distance[i]);
+    //     Serial.print("cm,   ");
+    // }
+    // Serial.print( millis() - lastTime);
+    // lastTime = millis();
+    // Serial.println(" ");   // end output print *****************************************
 
-    // Serial.read();
+    for(int i = 0; i< countUson; i++) {   // begin output write +++++++++++++++++++++++
+        Serial.write(distance[i]);
+    }                      // end output write ++++++++++++++++++++++++++++++++++++++++
+
+
+    
     // delay(31);
     
 }  // end of loop() ****************************************************
@@ -90,7 +96,7 @@ void averageUltrasonic() { // Ultrasonic averaging
         for(int i = 0; i< countUson; i++) {
             //dist[i][N] =  sonar[i].ping_cm();
             distance[i] = sonar[i].ping_cm();
-            delay(30);
+            delay(30); // this MUST be here
         }
             
 
