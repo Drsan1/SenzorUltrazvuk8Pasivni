@@ -10,9 +10,9 @@
 // #define echoPin 19 // pouzit fialova cisla z "Arduino Nano Pinout detailed.jpg"
 // #define trigPin 4
 
-//todo zprovoznit komunikaci s ESP - uart
+// todo zprovoznit komunikaci s ESP - uart
 // todo prumerovat vzdy poslednich 5 mereni -viz IR ve "vytlaceni ze ctverce"
-//todo hlavicka 0x00, 0x80, 8 bytu dat, crc (bitovy soucet) 
+// todo hlavicka 0x00, 0x80, 8 bytu dat, crc (bitovy soucet) 
 
 const uint8_t countUson = 8; // count of Ultrasonics 
 const uint8_t countMeasure = 4; // count of measuring of every ultrasonic 
@@ -38,27 +38,9 @@ NewPing sonar[countUson] = {   // Sensor object array.
 void averageUltrasonic();
 long beginTime = millis();
 
-// uint8_t readUson(uint8_t numUson){
-//     digitalWrite(trigPin[numUson], HIGH);
-//     delayMicroseconds(10);
-//     digitalWrite(trigPin[numUson], LOW);
-//     // Reads the echoPin, returns the sound wave travel time in microseconds
-//     duration[numUson] = pulseIn(echoPin[numUson], HIGH);
-//     // Calculating the distance
-//     return duration[numUson] * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-// }
-
 void setup() {
-    // for(int i = 0; i< countUson; i++) {
-    //     pinMode(trigPin[i], OUTPUT);
-    //     pinMode(echoPin[i], INPUT); 
-    // }
-
-    // std::thread t2(averageUltrasonic); // prumerne hodnoty z IR
-
     Serial.begin(115200);
-    Serial.println("Ultrasonic Sensor HC-SR04 Test");
-    
+    Serial.println("Ultrasonic Sensor HC-SR04 Test");  
 }
  
 long lastTime = millis();
@@ -66,23 +48,21 @@ long lastTime = millis();
 void loop() {
     averageUltrasonic();  
       
-    // for(int i = 0; i< countUson; i++) {   // begin output print ************************
-    //     Serial.print(i);
-    //     Serial.print(" : "); // Serial.print(":  Distance: ");
-    //     Serial.print(distance[i]);
-    //     Serial.print("cm,   ");
-    // }
-    // Serial.print( millis() - lastTime);
-    // lastTime = millis();
-    // Serial.println(" ");   // end output print *****************************************
+    for(int i = 0; i< countUson; i++) {   // begin output print ************************
+        Serial.print(i);
+        Serial.print(" : "); // Serial.print(":  Distance: ");
+        Serial.print(distance[i]);
+        Serial.print("cm,   ");
+    }
+    Serial.print( millis() - lastTime);
+    lastTime = millis();
+    Serial.println(" ");   // end output print *****************************************
 
-    for(int i = 0; i< countUson; i++) {   // begin output write +++++++++++++++++++++++
-        Serial.write(distance[i]);
-    }                      // end output write ++++++++++++++++++++++++++++++++++++++++
+    // for(int i = 0; i< countUson; i++) {   // begin output write +++++++++++++++++++++++
+    //     Serial.write(distance[i]);
+    // }                      // end output write ++++++++++++++++++++++++++++++++++++++++
 
-
-    
-    // delay(31);
+    // Serial.write(128); // for testing
     
 }  // end of loop() ****************************************************
 
