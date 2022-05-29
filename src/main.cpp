@@ -51,7 +51,7 @@ void loop() {
         lastTime = millis();
         Serial.println(" ");   
     }
-    else { // sending data -
+    else { // sending data
         for(int k = 1; k<4; k++) {
             Serial.write(250);      // header 1. byte
             Serial.write(250 + k);  // header 2. byte
