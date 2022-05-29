@@ -9,9 +9,6 @@ const uint8_t countMeasure = 4; // count of measuring of every ultrasonic
 const uint8_t maxDist = 200; 
 long duration[countUson] = { 0 }; // variable for the duration of sound wave travel
 uint8_t distance[countUson] = { 0 };  
-// uint8_t trigPin[countUson] = { 3, 4, 5, 6, 7, 8, 9, 10 }; //10
-// uint8_t echoPin[countUson] = { 2, 19, 18, 17, 16, 15, 14, 13};  //13
-// uint8_t dist[countUson][countMeasure] = {{ 0 }, { 0 }} ; 
 
 NewPing sonar[countUson] = {   // Sensor object array.
   NewPing(3, 2, maxDist), // Each sensor's trigger pin, echo pin, and max distance to ping. 
@@ -62,33 +59,5 @@ void loop() {
                 Serial.write(distance[i]);
             }   
         }
-    }
-    // Serial.write(128); // for testing
-    
+    }   
 }  // end of loop() ****************************************************
-
-//void averageUltrasonic() { // Ultrasonic averaging 
-
-    // while (true) {
-        // k++;
-        // if (k == 30000)
-        //     k = 0;
-        // byte N = k % countMeasure; 
-        // for(int i = 0; i< countUson; i++) {
-        //     //dist[i][N] =  sonar[i].ping_cm();
-        //     distance[i] = sonar[i].ping_cm();
-        //     delay(30); // this MUST be here
-        // }
-            
-
-        // for(int i = 0; i< countUson; i++)  {
-        //     byte a = 0; 
-        //     while (a < countMeasure) {
-        //         distance[i] += dist[i][a];
-        //         a++;
-        //     }
-        //     distance[i] /= countMeasure;
-        // } 
-        
-    // }
-//}
